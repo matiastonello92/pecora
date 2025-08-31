@@ -99,7 +99,7 @@ export default function HomePage() {
               <div>
                 <p className="font-medium">Contesto non impostato</p>
                 <p className="text-sm text-muted-foreground">
-                  Seleziona un'organizzazione e una location per accedere alle funzionalità complete.
+                  Seleziona un&apos;organizzazione e una location per accedere alle funzionalità complete.
                 </p>
               </div>
             </div>

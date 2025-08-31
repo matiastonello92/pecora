@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase/client';
 
 export default function WhoAmI() {
-  const [state, setState] = useState<any>({});
+  const [state, setState] = useState<Record<string, unknown>>({});
   useEffect(() => {
     (async () => {
       const { data: { user } } = await supabase.auth.getUser();
