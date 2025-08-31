@@ -6,14 +6,10 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint",
     "migrate": "tsx scripts/migrate.ts",
-    "test:smoke": "tsx tests/smoke.ts",
-    "test:rls": "tsx tests/rls-permissions.ts",
-    "test:all": "tsx scripts/test-all.ts"
-    ,"migrate": "tsx scripts/migrate.ts"    ,"seed": "tsx scripts/seed.ts"
-    ,"test:prompt0": "tsx scripts/test-prompt0.ts"    ,"test:bootstrap": "tsx tests/bootstrap-tests.ts"    ,"test:storage": "tsx tests/storage-tests.ts"
-    ,"test:mock": "tsx scripts/test-mock.ts"
+    "seed": "tsx scripts/seed.ts",
+    "lint": "next lint",
+    "test:smoke": "tsx tests/smoke.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
