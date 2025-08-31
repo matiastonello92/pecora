@@ -13,6 +13,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Flag, Plus, Settings, MapPin, Globe } from 'lucide-react'
 import { useAppStore } from '@/lib/store'
+import { useRequireSession } from '@/lib/useRequireSession'
 
 // Mock data for demonstration
 const mockFlags = [
@@ -72,6 +73,7 @@ const mockLocations = [
 ]
 
 export default function FeatureFlagsPage() {
+  useRequireSession()
   const { hasPermission } = useAppStore()
   const [selectedModule, setSelectedModule] = useState<string>('all')
   const [selectedScope, setSelectedScope] = useState<string>('all')

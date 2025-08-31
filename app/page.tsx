@@ -6,8 +6,10 @@ import { Badge } from '@/components/ui/badge'
 import { Users, Shield, Flag, Database, Settings, Activity } from 'lucide-react'
 import Link from 'next/link'
 import { useAppStore } from '@/lib/store'
+import { useRequireSession } from '@/lib/useRequireSession'
 
 export default function HomePage() {
+  useRequireSession()
   const { context, hasPermission } = useAppStore()
 
   // Mock stats for demonstration
