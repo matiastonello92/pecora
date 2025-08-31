@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Checkbox } from '@/components/ui/checkbox'
 import { Users, Shield, Settings, Plus } from 'lucide-react'
 import { useAppStore } from '@/lib/store'
+import { useRequireSession } from '@/lib/useRequireSession'
 
 // Mock data for demonstration
 const mockUsers = [
@@ -52,6 +53,7 @@ const mockPermissions = [
 ]
 
 export default function UsersPermissionsPage() {
+  useRequireSession()
   const { hasPermission } = useAppStore()
   const [selectedUser, setSelectedUser] = useState<string | null>(null)
   const [selectedLocation, setSelectedLocation] = useState<string>('all')
