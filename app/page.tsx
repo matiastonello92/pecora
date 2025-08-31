@@ -1,103 +1,220 @@
-import Image from "next/image";
+'use client'
 
-export default function Home() {
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Users, Shield, Flag, Database, Settings, Activity } from 'lucide-react'
+import Link from 'next/link'
+import { useAppStore } from '@/lib/store'
+
+export default function HomePage() {
+  const { context, hasPermission } = useAppStore()
+
+  // Mock stats for demonstration
+  const stats = [
+    {
+      title: 'Utenti Attivi',
+      value: '24',
+      description: 'Utenti registrati nel sistema',
+      icon: Users,
+      trend: '+12%'
+    },
+    {
+      title: 'Locations',
+      value: '2',
+      description: 'Lyon, Menton',
+      icon: Database,
+      trend: 'Stabile'
+    },
+    {
+      title: 'Feature Flags',
+      value: '8',
+      description: '6 attivi, 2 inattivi',
+      icon: Flag,
+      trend: '+2 questa settimana'
+    },
+    {
+      title: 'Permessi',
+      value: '23',
+      description: 'Permessi configurati',
+      icon: Shield,
+      trend: 'Aggiornati'
+    }
+  ]
+
+  const quickActions = [
+    {
+      title: 'Gestisci Utenti',
+      description: 'Amministra utenti e permessi',
+      href: '/admin/users',
+      icon: Users,
+      permission: 'locations.manage_users'
+    },
+    {
+      title: 'Feature Flags',
+      description: 'Configura funzionalità per moduli',
+      href: '/admin/flags',
+      icon: Flag,
+      permission: 'locations.manage_flags'
+    },
+    {
+      title: 'Impostazioni',
+      description: 'Configurazioni generali',
+      href: '/settings',
+      icon: Settings,
+      permission: 'locations.view'
+    }
+  ]
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="container mx-auto py-8 space-y-8">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-4xl font-bold">Staff Management</h1>
+          <p className="text-muted-foreground mt-2">
+            Sistema di gestione del personale multi-location
+          </p>
+          {context.org_id && (
+            <div className="flex gap-2 mt-4">
+              <Badge variant="outline">Org: Demo Organization</Badge>
+              <Badge variant="outline">Location: {context.location_id ? 'Lyon' : 'Tutte'}</Badge>
+            </div>
+          )}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        <div className="flex items-center gap-2">
+          <Activity className="h-5 w-5 text-green-500" />
+          <span className="text-sm text-muted-foreground">Sistema Operativo</span>
+        </div>
+      </div>
+
+      {/* Context Warning */}
+      {!context.org_id && (
+        <Card className="border-yellow-200 bg-yellow-50">
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <div className="h-2 w-2 rounded-full bg-yellow-500" />
+              <div>
+                <p className="font-medium">Contesto non impostato</p>
+                <p className="text-sm text-muted-foreground">
+                  Seleziona un'organizzazione e una location per accedere alle funzionalità complete.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {stats.map((stat, index) => (
+          <Card key={index}>
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    {stat.title}
+                  </p>
+                  <p className="text-2xl font-bold">{stat.value}</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {stat.description}
+                  </p>
+                </div>
+                <stat.icon className="h-8 w-8 text-muted-foreground" />
+              </div>
+              <div className="mt-4">
+                <Badge variant="secondary" className="text-xs">
+                  {stat.trend}
+                </Badge>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Quick Actions */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Azioni Rapide</CardTitle>
+          <CardDescription>
+            Accedi rapidamente alle funzioni principali del sistema
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {quickActions.map((action, index) => {
+              const canAccess = hasPermission(action.permission)
+              
+              return (
+                <Card key={index} className={!canAccess ? 'opacity-50' : ''}>
+                  <CardContent className="pt-6">
+                    <div className="flex items-center gap-3 mb-3">
+                      <action.icon className="h-6 w-6" />
+                      <h3 className="font-semibold">{action.title}</h3>
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      {action.description}
+                    </p>
+                    {canAccess ? (
+                      <Button asChild className="w-full">
+                        <Link href={action.href}>
+                          Accedi
+                        </Link>
+                      </Button>
+                    ) : (
+                      <Button disabled className="w-full">
+                        Accesso Negato
+                      </Button>
+                    )}
+                  </CardContent>
+                </Card>
+              )
+            })}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* System Status */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Stato del Sistema</CardTitle>
+          <CardDescription>
+            Monitoraggio dei servizi principali
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="h-2 w-2 rounded-full bg-green-500" />
+                <span>Database Supabase</span>
+              </div>
+              <Badge variant="secondary">Operativo</Badge>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="h-2 w-2 rounded-full bg-green-500" />
+                <span>Storage</span>
+              </div>
+              <Badge variant="secondary">Operativo</Badge>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="h-2 w-2 rounded-full bg-green-500" />
+                <span>Edge Functions</span>
+              </div>
+              <Badge variant="secondary">Operativo</Badge>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="h-2 w-2 rounded-full bg-yellow-500" />
+                <span>Email Service (Resend)</span>
+              </div>
+              <Badge variant="outline">Test Richiesto</Badge>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
-  );
+  )
 }
