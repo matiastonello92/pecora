@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { supabase } from '@/lib/supabase/client'
+import { createClient } from '@/utils/supabase/client'
 
 interface AppContext {
   organizationId: string | null
@@ -26,6 +26,7 @@ export function useAppContext() {
       console.log('🔄 Setting app context:', { orgId, locationId })
       
       // Chiamata RPC per impostare il contesto
+      const supabase = createClient()
       const { data, error: rpcError } = await supabase.rpc('app.set_context_checked', {
         p_org: orgId,
         p_location: locationId
