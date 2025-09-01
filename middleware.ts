@@ -19,13 +19,6 @@ export async function middleware(req: NextRequest) {
     ].join('; ');
     res.headers.set('Content-Security-Policy', csp);
 
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    if (url && anon) {
-      const { createSupabaseServerClient } = await import('./utils/supabase/server');
-      createSupabaseServerClient();
-    }
-
     return res;
   } catch {
     return NextResponse.next();
