@@ -41,10 +41,9 @@ export async function POST(request: NextRequest) {
       .eq('id', userId)
       .single()
 
-    let userData
     if (!existingUser) {
       // Create user record
-      const { data: newUser, error: userError } = await supabaseAdmin
+      const { error: userError } = await supabaseAdmin
         .from('users')
         .insert({
           id: userId,
@@ -53,8 +52,6 @@ export async function POST(request: NextRequest) {
           last_name: user.user_metadata?.last_name || 'User',
           status: 'active'
         })
-        .select()
-        .single()
 
       if (userError) {
         console.error('Error creating user:', userError)
@@ -63,9 +60,6 @@ export async function POST(request: NextRequest) {
           { status: 500 }
         )
       }
-      userData = newUser
-    } else {
-      userData = existingUser
     }
 
     // Get Demo Organization

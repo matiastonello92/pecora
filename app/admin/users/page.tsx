@@ -55,7 +55,6 @@ const mockPermissions = [
 export default function UsersPermissionsPage() {
   useRequireSession()
   const { hasPermission } = useAppStore()
-  const [selectedUser, setSelectedUser] = useState<string | null>(null)
   const [selectedLocation, setSelectedLocation] = useState<string>('all')
 
   // Check if user can manage users and permissions
