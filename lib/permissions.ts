@@ -1,5 +1,18 @@
 import { supabaseAdmin } from './supabase/server'
 
+type MaybeArray<T> = T | T[] | null | undefined;
+
+function asArray<T>(v: MaybeArray<T>): T[] {
+  return v == null ? [] : Array.isArray(v) ? v : [v];
+}
+
+// Tipi minimi per evitare any
+type PermissionRow = { code?: string | null } | { permissions?: { code?: string | null } | null } | null;
+type RolePermissionRow = { permissions?: { code?: string | null } | null } | null;
+type RoleRow = { role_permissions?: MaybeArray<RolePermissionRow> } | null;
+type UserRoleRow = { roles?: MaybeArray<RoleRow> } | null;
+type OverrideRow = { allow?: boolean | null; permissions?: MaybeArray<{ code?: string | null }> } | null;
+
 // Cache interface
 interface PermissionCacheEntry {
   permissions: Set<string>
@@ -64,22 +77,15 @@ async function calculateEffectivePermissions(
     }
 
     // Extract permission codes from roles
-    type PermissionRow = { permissions?: { code?: string | null } | null } | null
-    type RoleRow = { role_permissions?: PermissionRow[] | null } | null
-    type UserRoleRow = { roles?: RoleRow[] | null } | null
-
-    const rolePermissionCodes = new Set<string>()
-    const rows = (rolePermissions as UserRoleRow[] | null) ?? []
-    rows.forEach(userRole => {
-      const roles = userRole?.roles ?? []
-      roles.forEach(role => {
-        const rps = role?.role_permissions ?? []
-        rps.forEach(rp => {
-          const code = rp?.permissions?.code ?? undefined
-          if (code) rolePermissionCodes.add(code)
-        })
-      })
-    })
+    const rolePermissionCodes = new Set<string>();
+    asArray<UserRoleRow>(rolePermissions as MaybeArray<UserRoleRow>).forEach(userRole => {
+      asArray<RoleRow>(userRole?.roles).forEach(role => {
+        asArray<RolePermissionRow>(role?.role_permissions).forEach(rp => {
+          const code = rp?.permissions?.code ?? undefined;
+          if (code) rolePermissionCodes.add(code);
+        });
+      });
+    });
 
     // Query 2: Get user-specific permission overrides
     const { data: overrides, error: overrideError } = await supabaseAdmin
@@ -99,22 +105,21 @@ async function calculateEffectivePermissions(
     }
 
     // Apply overrides to role permissions
-    const effectivePermissions = new Set(rolePermissionCodes)
-    
-    overrides?.forEach(override => {
-      const permissionCode = override.permissions?.code
-      if (permissionCode) {
-        if (override.allow) {
+    asArray<OverrideRow>(overrides as MaybeArray<OverrideRow>).forEach(override => {
+      asArray<{ code?: string | null }>(override?.permissions).forEach(p => {
+        const code = p?.code ?? undefined;
+        if (!code) return;
+        if (override?.allow) {
           // Grant permission (add to set)
-          effectivePermissions.add(permissionCode)
+          rolePermissionCodes.add(code);
         } else {
           // Deny permission (remove from set)
-          effectivePermissions.delete(permissionCode)
+          rolePermissionCodes.delete(code);
         }
-      }
-    })
+      });
+    });
 
-    return effectivePermissions
+    return rolePermissionCodes
 
   } catch (error) {
     console.error('Error calculating effective permissions:', error)

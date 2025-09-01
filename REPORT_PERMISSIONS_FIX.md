@@ -1,5 +1,3 @@
-## Permissions fix
-
-- **Causa:** la query `user_roles` restituisce `roles` come array; il loop precedente presupponeva un oggetto.
-- **Fix:** iterazione annidata `roles[] -> role_permissions[]` con tipi minimi per rispettare la shape.
-- **Impatto DB:** nessuno.
+Causa: join Supabase restituiscono oggetti o array.
+Soluzione: helper asArray per iterare roles, role_permissions e override permissions.
+Impatto: nessuna modifica funzionale.
