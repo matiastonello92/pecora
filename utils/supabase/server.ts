@@ -1,9 +1,8 @@
-import { cookies, headers } from "next/headers";
+import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 
-export async function createClient() {
+export function createClient() {
   const cookieStore = cookies();
-  const headerList = headers();
 
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -11,12 +10,10 @@ export async function createClient() {
     {
       cookies: {
         get(name: string) { return cookieStore.get(name)?.value; },
-        set() {}, // aggiornamento cookie demandato alla middleware
-        remove() {},
-      },
-      headers: {
-        get(name: string) { return headerList.get(name) ?? undefined; },
+        set() { /* no-op: scrive la middleware */ },
+        remove(_name: string, _options?: unknown) { /* no-op: scrive la middleware */ },
       },
     }
   );
 }
+
