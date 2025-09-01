@@ -7,11 +7,11 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
-import { 
-  Home, 
-  Users, 
-  Flag, 
-  Settings, 
+import {
+  Home,
+  Users,
+  Flag,
+  Settings,
   Database,
   Package,
   Wrench,
@@ -111,7 +111,7 @@ const navigation = [
   }
 ]
 
-export function Sidebar() {
+export default function SidebarClient() {
   const [collapsed, setCollapsed] = useState(false)
   const pathname = usePathname()
   const { hasPermission, context } = useAppStore()
@@ -167,7 +167,7 @@ export function Sidebar() {
                   {section.name}
                 </h3>
               )}
-              
+
               {section.href ? (
                 // Single item
                 <Link
@@ -185,23 +185,23 @@ export function Sidebar() {
                 <div className="space-y-1">
                   {section.items?.map((item) => {
                     const canAccess = !item.permission || hasPermission(item.permission)
-                    
+
                     if (!canAccess && !collapsed) {
                       return null // Hide inaccessible items when expanded
                     }
-                    
+
                     return (
                       <Link
                         key={item.href}
                         href={item.href}
                         className={cn(
                           "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
-                          canAccess 
-                            ? "hover:bg-accent hover:text-accent-foreground" 
+                          canAccess
+                            ? "hover:bg-accent hover:text-accent-foreground"
                             : "opacity-50 cursor-not-allowed",
                           pathname === item.href && canAccess
-                            ? "bg-accent text-accent-foreground" 
-                            : "text-muted-foreground"
+                            ? "bg-accent text-accent-foreground"
+                            : "text-muted-foreground",
                         )}
                         onClick={(e) => {
                           if (!canAccess) {
@@ -223,7 +223,7 @@ export function Sidebar() {
                   })}
                 </div>
               )}
-              
+
               {sectionIndex < navigation.length - 1 && !collapsed && (
                 <Separator className="my-4" />
               )}
@@ -254,3 +254,4 @@ export function Sidebar() {
     </div>
   )
 }
+

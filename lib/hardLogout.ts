@@ -1,6 +1,6 @@
-import { createClient } from '@/utils/supabase/client';
+import { createSupabaseBrowserClient } from '@/utils/supabase/client';
 export async function hardLogout() {
-  const supabase = createClient();
+  const supabase = createSupabaseBrowserClient();
   try { await supabase.auth.signOut(); } catch {}
   try {
     localStorage.clear(); sessionStorage.clear();

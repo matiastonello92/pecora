@@ -26,7 +26,7 @@ const mockLocations = [
   { id: '550e8400-e29b-41d4-a716-446655440002', name: 'Menton' }
 ]
 
-export function Header() {
+export default function HeaderClient() {
   const { context, setContext } = useAppStore()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -143,8 +143,8 @@ export function Header() {
           {/* Notifications */}
           <Button variant="ghost" size="sm" className="relative">
             <Bell className="h-4 w-4" />
-            <Badge 
-              variant="destructive" 
+            <Badge
+              variant="destructive"
               className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 text-xs"
             >
               3
@@ -157,3 +157,4 @@ export function Header() {
     </header>
   )
 }
+
