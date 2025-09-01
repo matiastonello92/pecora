@@ -11,7 +11,7 @@ export async function createClient() {
     {
       cookies: {
         get(name: string) { return cookieStore.get(name)?.value; },
-        set() {}, // gli update li fa la middleware
+        set() {}, // aggiornamento cookie demandato alla middleware
         remove() {},
       },
       headers: {
