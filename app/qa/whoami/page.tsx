@@ -1,11 +1,12 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase/client';
+import { createClient } from '@/utils/supabase/client';
 
 export default function WhoAmI() {
   const [state, setState] = useState<Record<string, unknown>>({});
   useEffect(() => {
     (async () => {
+      const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
       const { data: session } = await supabase.auth.getSession();
       const { data: locs, error: lerr } = await supabase.from('locations').select('id,name,org_id').limit(5);

@@ -43,7 +43,7 @@ export function Header() {
     const params = new URLSearchParams(searchParams.toString())
     if (orgId) {
       params.set('orgId', orgId)
-      document.cookie = `pn_org=${orgId}; path=/`
+      document.cookie = `pn_org=${orgId}; path=/; max-age=7776000`
     } else {
       params.delete('orgId')
       document.cookie = 'pn_org=; Max-Age=0; path=/'
@@ -67,7 +67,7 @@ export function Header() {
     }
     if (newLoc) {
       params.set('locationId', newLoc)
-      document.cookie = `pn_loc=${newLoc}; path=/`
+      document.cookie = `pn_loc=${newLoc}; path=/; max-age=7776000`
     } else {
       params.delete('locationId')
       document.cookie = 'pn_loc=; Max-Age=0; path=/'
@@ -85,7 +85,7 @@ export function Header() {
             <Building className="h-4 w-4 text-muted-foreground" />
             <Select
               value={context.org_id ?? undefined}
-              onValueChange={(v) => handleOrgChange(v || undefined)}
+              onValueChange={handleOrgChange}
             >
               <SelectTrigger className="w-48">
                 <SelectValue placeholder="Seleziona organizzazione" />
@@ -110,7 +110,7 @@ export function Header() {
               <MapPin className="h-4 w-4 text-muted-foreground" />
               <Select
                 value={context.location_id ?? undefined}
-                onValueChange={(v) => handleLocationChange(v || undefined)}
+                onValueChange={handleLocationChange}
               >
                 <SelectTrigger className="w-40">
                   <SelectValue placeholder="Tutte le location" />
