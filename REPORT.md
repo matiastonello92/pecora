@@ -22,6 +22,7 @@
 - `utils/supabase/config.ts`, `.env.example`: rimozione fallback hardcoded.
 - `app/not-found.tsx`, `app/error.tsx`, `app/loading.tsx`: aggiunte boundary di routing.
 - `components/nav/HeaderClient.tsx`, `components/nav/SidebarClient.tsx`, `app/layout.tsx`: separazione client/server e `<Suspense>`.
+- `db/migrations/003_permission_presets.sql`, `db/seeds/002_permission_presets.sql`: tabelle preset globali con RLS (solo admin possono modificare) e seed idempotente.
 
 ### Note migrazione 0.5 → 0.7
 
