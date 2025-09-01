@@ -4,6 +4,8 @@
 
 Complete multi-tenant staff management system with **deny-by-default security**, **RBAC/ABAC permissions**, and **comprehensive governance**. Built with Next.js 15 + Supabase + TypeScript.
 
+Includes global permission presets protected by row-level security (authenticated read, admin-only manage).
+
 **Status: ✅ BOOTSTRAP PHASE COMPLETED**
 
 ---
