@@ -9,9 +9,13 @@ export function createClient() {
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        get(name: string) { return cookieStore.get(name)?.value; },
-        set() { /* no-op: scrive la middleware */ },
-        remove(_name: string, _options?: unknown) { /* no-op: scrive la middleware */ },
+        // ✅ fornisci getAll() come richiesto dal tipo CookieMethodsServer
+        getAll: () =>
+          cookieStore.getAll().map((c) => ({ name: c.name, value: c.value })),
+
+        // 🚫 niente scrittura cookie qui: la fa la middleware
+        set: () => {},
+        remove: () => {},
       },
     }
   );
