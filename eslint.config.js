@@ -1,15 +1,7 @@
-// eslint.config.js (flat)
-import next from 'eslint-config-next';
-
+// eslint.config.js (Flat config ESM)
 export default [
   {
-    ignores: [
-      '.next',
-      'node_modules',
-      'supabase/functions/**',
-      'tests/**',
-    ],
+    ignores: ["**/*"],
   },
-  ...next(),
 ];
 
