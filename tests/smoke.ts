@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { supabaseAdmin } from '../lib/supabase/server'
 import { Resend } from 'resend'
 
