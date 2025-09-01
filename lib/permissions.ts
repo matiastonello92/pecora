@@ -64,13 +64,20 @@ async function calculateEffectivePermissions(
     }
 
     // Extract permission codes from roles
+    type PermissionRow = { permissions?: { code?: string | null } | null } | null
+    type RoleRow = { role_permissions?: PermissionRow[] | null } | null
+    type UserRoleRow = { roles?: RoleRow[] | null } | null
+
     const rolePermissionCodes = new Set<string>()
-    rolePermissions?.forEach(userRole => {
-      userRole.roles?.role_permissions?.forEach(rolePermission => {
-        const permissionCode = rolePermission.permissions?.code
-        if (permissionCode) {
-          rolePermissionCodes.add(permissionCode)
-        }
+    const rows = (rolePermissions as UserRoleRow[] | null) ?? []
+    rows.forEach(userRole => {
+      const roles = userRole?.roles ?? []
+      roles.forEach(role => {
+        const rps = role?.role_permissions ?? []
+        rps.forEach(rp => {
+          const code = rp?.permissions?.code ?? undefined
+          if (code) rolePermissionCodes.add(code)
+        })
       })
     })
 
