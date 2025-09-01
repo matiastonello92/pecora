@@ -9,7 +9,7 @@
     "start": "next start",
     "migrate": "tsx scripts/migrate.ts",
     "seed": "tsx scripts/seed.ts",
-    "lint": "eslint --no-warn-ignored --no-error-on-unmatched-pattern .",
+    "lint": "next lint",
     "test:smoke": "tsx tests/smoke.ts"
   },
   "dependencies": {

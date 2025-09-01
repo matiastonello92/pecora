@@ -1,6 +1,4 @@
 import Link from "next/link";
-import { Suspense } from "react";
-import NotFoundQuery from "./not-found.client";
 
 export default function NotFound() {
   return (
@@ -9,18 +7,9 @@ export default function NotFound() {
       <p className="mt-2 text-sm text-gray-600">
         La pagina che cerchi non esiste o è stata spostata.
       </p>
-
-      {/* Se non servono i query param, puoi rimuovere del tutto <Suspense><NotFoundQuery/></Suspense> */}
-      <Suspense fallback={null}>
-        <NotFoundQuery />
-      </Suspense>
-
       <div className="mt-6">
-        <Link href="/" className="underline">
-          Torna alla dashboard
-        </Link>
+        <Link href="/" className="underline">Torna alla dashboard</Link>
       </div>
     </main>
   );
 }
-
