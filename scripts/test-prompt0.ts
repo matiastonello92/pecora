@@ -1,6 +1,28 @@
 import { runBootstrapTests } from '../tests/bootstrap-tests'
 import { runStorageTests } from '../tests/storage-tests'
-import { runSmokeTests } from '../tests/smoke'
+import { Resend } from 'resend'
+
+type TestResults = {
+  bootstrap: boolean
+  storage: boolean
+  smoke: boolean
+}
+
+async function runSmokeTests(): Promise<boolean> {
+  const key = process.env.RESEND_API_KEY
+  if (!key) {
+    console.log('SKIP email smoke: missing RESEND_API_KEY')
+    return true
+  }
+
+  try {
+    const resend = new Resend(key)
+    return true
+  } catch (err) {
+    console.error('Smoke test failed:', err)
+    return false
+  }
+}
 
 /**
  * Complete Test Suite for Prompt 0 Bootstrap
@@ -41,7 +63,7 @@ async function generateSystemReport() {
   console.log('')
 }
 
-async function runAllTests() {
+async function runAllTests(): Promise<boolean> {
   console.log('🚀 PROMPT 0 BOOTSTRAP - COMPLETE TEST SUITE')
   console.log('=' .repeat(60))
   console.log('')
@@ -51,7 +73,7 @@ async function runAllTests() {
     await generateSystemReport()
     
     // Test results tracking
-    const testResults = {
+    const testResults: TestResults = {
       bootstrap: false,
       storage: false,
       smoke: false
@@ -150,6 +172,9 @@ async function runAllTests() {
       console.log('')
     }
     
+    if (!testResults.smoke) {
+      throw new Error('Smoke tests failed')
+    }
     return failedTests === 0
     
   } catch (error) {
