@@ -11,21 +11,21 @@ export async function updateSession(request: NextRequest) {
       cookies: {
         get: (name: string) => request.cookies.get(name)?.value,
         set: (name: string, value: string, options?: any) => {
-          // aggiorna SIA la response (browser) SIA la request (Server Components)
+          // response può ricevere options; request NO (solo name, value)
           response.cookies.set(name, value, options);
-          request.cookies.set(name, value, options);
+          request.cookies.set(name, value);
         },
         remove: (name: string, options?: any) => {
-          // NextRequest.delete accetta solo (name)
+          // request.delete: solo (name)
           request.cookies.delete(name);
-          // NextResponse.delete accetta (name, options?)
+          // response.delete: (name, options?) — le options sono opzionali
           response.cookies.delete(name, options);
         },
       },
     }
   );
 
-  // forza un getUser() per gestire il refresh token/cookie
+  // Forza refresh token/cookie se necessario
   await supabase.auth.getUser();
 
   return response;
