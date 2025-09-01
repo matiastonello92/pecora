@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@supabase/ssr';
+import { NextRequest, NextResponse } from "next/server";
+import { createServerClient } from "@supabase/ssr";
 
 export async function updateSession(request: NextRequest) {
   const response = NextResponse.next();
@@ -11,7 +11,6 @@ export async function updateSession(request: NextRequest) {
       cookies: {
         get: (name) => request.cookies.get(name)?.value,
         set: (name, value, options) => {
-          // aggiorna sia la request (per i Server Components) sia la response (per il browser)
           request.cookies.set({ name, value, ...options });
           response.cookies.set({ name, value, ...options });
         },
@@ -23,8 +22,7 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  // 1) Forza un getUser() per rinfrescare il token se scaduto
+  // forza refresh se necessario
   await supabase.auth.getUser();
-
   return response;
 }
