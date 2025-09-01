@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/utils/supabase/server";
+import { supabaseServer } from "@/utils/supabase/server";
 import { supabaseAdmin } from "@/lib/supabase/server";
 
 export async function GET(req: Request) {
@@ -9,7 +9,7 @@ export async function GET(req: Request) {
     const locationId = url.searchParams.get("locationId") ?? "";
 
     // 1) Auth utente via @supabase/ssr (server-side)
-    const sb = await createClient();
+    const sb = await supabaseServer();
     const { data: { user }, error: authErr } = await sb.auth.getUser();
     if (authErr || !user) {
       return NextResponse.json({}, { status: 401 });
