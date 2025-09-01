@@ -177,7 +177,7 @@ export default function FeatureFlagsPage() {
                     <SelectValue placeholder="Seleziona ambito" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="global">Globale (tutta l'organizzazione)</SelectItem>
+                    <SelectItem value="global">Globale (tutta l&apos;organizzazione)</SelectItem>
                     <SelectItem value="location">Per Location</SelectItem>
                   </SelectContent>
                 </Select>

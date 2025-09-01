@@ -48,7 +48,7 @@ function DefaultErrorFallback({ error }: { error?: Error }) {
           </div>
           <div className="ml-3">
             <h3 className="text-sm font-medium text-gray-800">
-              Errore dell'applicazione
+              Errore dell&apos;applicazione
             </h3>
           </div>
         </div>
