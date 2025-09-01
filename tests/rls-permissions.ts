@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { supabaseAdmin } from '../lib/supabase/server'
 import { can, getUserPermissions } from '../lib/permissions'
 
