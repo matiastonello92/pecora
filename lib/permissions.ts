@@ -7,7 +7,6 @@ function asArray<T>(v: MaybeArray<T>): T[] {
 }
 
 // Tipi minimi per evitare any
-type PermissionRow = { code?: string | null } | { permissions?: { code?: string | null } | null } | null;
 type RolePermissionRow = { permissions?: { code?: string | null } | null } | null;
 type RoleRow = { role_permissions?: MaybeArray<RolePermissionRow> } | null;
 type UserRoleRow = { roles?: MaybeArray<RoleRow> } | null;
@@ -47,10 +46,11 @@ function getCacheKey(user_id: string, org_id: string, location_id?: string): str
  * Combines role-based permissions with user-specific overrides
  */
 async function calculateEffectivePermissions(
-  user_id: string, 
-  org_id: string, 
-  location_id?: string
+  user_id: string,
+  org_id: string,
+  _location_id?: string
 ): Promise<Set<string>> {
+  void _location_id
   try {
     // Query 1: Get permissions from user's roles in this org
     const { data: rolePermissions, error: roleError } = await supabaseAdmin

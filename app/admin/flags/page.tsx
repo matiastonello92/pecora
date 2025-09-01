@@ -67,11 +67,6 @@ const mockModules = [
   'locations', 'inventario', 'tecnici', 'incidents', 'fornitori', 'ordini', 'task', 'chat', 'api'
 ]
 
-const mockLocations = [
-  { id: '1', name: 'Lyon' },
-  { id: '2', name: 'Menton' }
-]
-
 export default function FeatureFlagsPage() {
   useRequireSession()
   const { hasPermission } = useAppStore()

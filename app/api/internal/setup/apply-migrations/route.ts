@@ -151,20 +151,6 @@ export async function POST(request: NextRequest) {
 }
 
 async function ensureMigrationsLedger() {
-  const createLedgerSQL = `
-    CREATE TABLE IF NOT EXISTS app_migrations (
-      id SERIAL PRIMARY KEY,
-      applied_at TIMESTAMPTZ DEFAULT NOW(),
-      name TEXT UNIQUE NOT NULL,
-      checksum TEXT NOT NULL,
-      type TEXT DEFAULT 'migration',
-      execution_time_ms INTEGER DEFAULT 0
-    );
-    
-    CREATE INDEX IF NOT EXISTS idx_app_migrations_name ON app_migrations(name);
-    CREATE INDEX IF NOT EXISTS idx_app_migrations_applied_at ON app_migrations(applied_at);
-  `
-
   // Execute via raw SQL since we need to create the ledger table first
   try {
     // Split into individual statements for better error handling
