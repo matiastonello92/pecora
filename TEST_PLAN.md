@@ -14,4 +14,15 @@
    - `bun run lint`
    - `bun run typecheck` (se disponibile)
    - `bun run build`
+6. API di base
+   - `/api/health` → 200
+   - `/api/internal/setup/apply-migrations`
+     - senza token → 401
+     - `APP_SETUP_LOCKED=true` → 423
+     - token ok ma DB mancante → 503
+     - token ok e DB presente → 200 con `{ ok: true, migrated >= 0 }`
+   - `/api/v1/admin/bootstrap`
+     - schema mancante → 422
+     - service-role mancante → 503
+     - successo → 200 con payload coerente
 
