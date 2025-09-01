@@ -1,4 +1,4 @@
-// eslint.config.js (flat config)
+// eslint.config.js (flat)
 import next from 'eslint-config-next';
 
 export default [
@@ -7,7 +7,7 @@ export default [
       '.next',
       'node_modules',
       'supabase/functions/**',
-      'tests/**'
+      'tests/**',
     ],
   },
   ...next(),
