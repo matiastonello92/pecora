@@ -12,6 +12,9 @@ import {
 import { Bell, MapPin, Building } from 'lucide-react'
 import { useAppStore } from '@/lib/store'
 import { UserBadge } from '@/components/UserBadge'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { setAppContext } from '@/lib/appContext'
+import { useEffectivePermissions } from '@/hooks/useEffectivePermissions'
 
 // Mock data for demonstration
 const mockOrgs = [
@@ -25,21 +28,52 @@ const mockLocations = [
 
 export function Header() {
   const { context, setContext } = useAppStore()
+  const router = useRouter()
+  const searchParams = useSearchParams()
 
-  const handleOrgChange = (orgId?: string) => {
+  useEffectivePermissions()
+
+  const handleOrgChange = async (orgId?: string) => {
     setContext({
       ...context,
       org_id: orgId ?? null,
-      location_id: null // Reset location when org changes
+      location_id: null
     })
+
+    const params = new URLSearchParams(searchParams.toString())
+    if (orgId) {
+      params.set('orgId', orgId)
+      document.cookie = `pn_org=${orgId}; path=/`
+    } else {
+      params.delete('orgId')
+      document.cookie = 'pn_org=; Max-Age=0; path=/'
+    }
+    params.delete('locationId')
+    document.cookie = 'pn_loc=; Max-Age=0; path=/'
+    router.replace(`?${params.toString()}`)
+    await setAppContext(orgId, undefined)
   }
 
-  const handleLocationChange = (locationId?: string) => {
+  const handleLocationChange = async (locationId?: string) => {
+    const newLoc = !locationId || locationId === 'all-locations' ? null : locationId
     setContext({
       ...context,
-      location_id:
-        !locationId || locationId === 'all-locations' ? null : locationId
+      location_id: newLoc
     })
+
+    const params = new URLSearchParams(searchParams.toString())
+    if (context.org_id) {
+      params.set('orgId', context.org_id)
+    }
+    if (newLoc) {
+      params.set('locationId', newLoc)
+      document.cookie = `pn_loc=${newLoc}; path=/`
+    } else {
+      params.delete('locationId')
+      document.cookie = 'pn_loc=; Max-Age=0; path=/'
+    }
+    router.replace(`?${params.toString()}`)
+    await setAppContext(context.org_id ?? undefined, newLoc ?? undefined)
   }
 
   return (
