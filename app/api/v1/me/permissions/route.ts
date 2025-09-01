@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/utils/supabase/server";
-import { supabaseAdmin } from "@/lib/supabase/server";
+import { createSupabaseAdminClient } from "@/lib/supabase/server";
+
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+export const runtime = 'nodejs'
 
 export async function GET(req: Request) {
   try {
@@ -10,6 +14,7 @@ export async function GET(req: Request) {
 
     // 1) Authenticate user using server-side Supabase client (via @supabase/ssr)
     const supabase = createSupabaseServerClient();
+    const supabaseAdmin = createSupabaseAdminClient();
     const { data: { user }, error: authErr } = await supabase.auth.getUser();
     if (authErr || !user) {
       return NextResponse.json({}, { status: 401 });
@@ -18,7 +23,7 @@ export async function GET(req: Request) {
       return NextResponse.json({ permissions: [] }, { status: 200 });
     }
 
-    // 2) RPC with service role: supabaseAdmin is a client instance, not a function
+    // 2) RPC con service role
     const { data, error } = await supabaseAdmin.rpc("get_effective_permissions", {
       p_user: user.id,
       p_org: orgId,

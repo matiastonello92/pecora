@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+export const runtime = 'nodejs'
+
 /**
  * Bootstrap Implementation Report
  * Generates a comprehensive report of Prompt 0.1 implementation status
- * 
+ *
  * GET /api/internal/setup/bootstrap-report
  */
 

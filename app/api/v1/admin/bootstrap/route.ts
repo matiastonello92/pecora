@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase/server'
+import { createSupabaseAdminClient } from '@/lib/supabase/server'
+
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+export const runtime = 'nodejs'
 
 /**
  * Bootstrap Admin User - Idempotent
@@ -9,6 +13,7 @@ import { supabaseAdmin } from '@/lib/supabase/server'
  */
 export async function POST(request: NextRequest) {
   try {
+    const supabaseAdmin = createSupabaseAdminClient()
     console.log('🚀 Bootstrap admin user...')
 
     // Get current user from auth header
