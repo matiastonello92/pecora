@@ -2,13 +2,14 @@
   "name": "staff-management",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
     "migrate": "tsx scripts/migrate.ts",
     "seed": "tsx scripts/seed.ts",
-    "lint": "next lint",
+    "lint": "eslint --no-warn-ignored --no-error-on-unmatched-pattern .",
     "test:smoke": "tsx tests/smoke.ts"
   },
   "dependencies": {
