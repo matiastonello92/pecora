@@ -1,182 +1,125 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createSupabaseAdminClient } from '@/lib/supabase/server'
+import { NextRequest, NextResponse } from 'next/server';
 
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
-export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+export const revalidate = 0;
 
-/**
- * Bootstrap Admin User - Idempotent
- * Creates admin user and assigns permissions if not exists
- * 
- * POST /api/v1/admin/bootstrap
- */
-export async function POST(request: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
-    const supabaseAdmin = createSupabaseAdminClient()
-    console.log('🚀 Bootstrap admin user...')
-
-    // Get current user from auth header
-    const authHeader = request.headers.get('authorization')
+    const authHeader = req.headers.get('authorization');
     if (!authHeader?.startsWith('Bearer ')) {
-      return NextResponse.json(
-        { error: 'Authorization header required' },
-        { status: 401 }
-      )
+      return NextResponse.json({ ok: false, error: 'unauthorized' }, { status: 401 });
     }
 
-    const token = authHeader.split(' ')[1]
-    
-    // Verify token and get user
-    const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token)
-    
-    if (authError || !user) {
-      return NextResponse.json(
-        { error: 'Invalid token' },
-        { status: 401 }
-      )
+    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      return NextResponse.json({ ok: false, error: 'service_role_not_configured' }, { status: 503 });
     }
 
-    const userId = user.id
+    const dbUrl = process.env.DATABASE_URL || process.env.SUPABASE_DB_URL;
+    if (!dbUrl) {
+      return NextResponse.json({ ok: false, error: 'db_not_configured' }, { status: 503 });
+    }
 
-    // Check if user already exists in users table
-    const { data: existingUser } = await supabaseAdmin
-      .from('users')
-      .select('id, email')
-      .eq('id', userId)
-      .single()
+    let supabase;
+    try {
+      const { createSupabaseAdminClient } = await import('@/lib/supabase/server');
+      supabase = createSupabaseAdminClient();
+    } catch {
+      return NextResponse.json({ ok: false, error: 'service_role_not_configured' }, { status: 503 });
+    }
 
-    if (!existingUser) {
-      // Create user record
-      const { error: userError } = await supabaseAdmin
-        .from('users')
-        .insert({
-          id: userId,
-          email: user.email,
-          first_name: user.user_metadata?.first_name || 'Admin',
-          last_name: user.user_metadata?.last_name || 'User',
-          status: 'active'
-        })
+    const token = authHeader.split(' ')[1];
+    const { data: { user }, error: userErr } = await supabase.auth.getUser(token);
+    if (userErr || !user) {
+      return NextResponse.json({ ok: false, error: 'unauthorized' }, { status: 401 });
+    }
+    const userId = user.id;
 
-      if (userError) {
-        console.error('Error creating user:', userError)
-        return NextResponse.json(
-          { error: 'Failed to create user' },
-          { status: 500 }
-        )
+    const { Client } = await import('pg');
+    const client = new Client({ connectionString: dbUrl });
+    await client.connect();
+
+    try {
+      const required: Record<string, string[]> = {
+        orgs: ['id', 'name'],
+        locations: ['id', 'org_id', 'name'],
+        users: ['id'],
+        users_locations: ['user_id', 'org_id', 'location_id'],
+        roles: ['id', 'org_id', 'code', 'name'],
+        user_roles: ['user_id', 'org_id', 'role_id', 'location_id'],
+      };
+      const missing: string[] = [];
+      for (const [table, cols] of Object.entries(required)) {
+        const t = await client.query(
+          'select 1 from information_schema.tables where table_schema=$1 and table_name=$2',
+          ['public', table]
+        );
+        if (t.rowCount === 0) {
+          missing.push(table);
+          continue;
+        }
+        for (const col of cols) {
+          const c = await client.query(
+            'select 1 from information_schema.columns where table_schema=$1 and table_name=$2 and column_name=$3',
+            ['public', table, col]
+          );
+          if (c.rowCount === 0) missing.push(`${table}.${col}`);
+        }
       }
-    }
-
-    // Get Demo Organization
-    const { data: demoOrg } = await supabaseAdmin
-      .from('organizations')
-      .select('id, name')
-      .eq('name', 'Demo Organization')
-      .single()
-
-    if (!demoOrg) {
-      return NextResponse.json(
-        { error: 'Demo Organization not found' },
-        { status: 404 }
-      )
-    }
-
-    // Get Lyon location
-    const { data: lyonLocation } = await supabaseAdmin
-      .from('locations')
-      .select('id, name')
-      .eq('organization_id', demoOrg.id)
-      .eq('name', 'Lyon')
-      .single()
-
-    if (!lyonLocation) {
-      return NextResponse.json(
-        { error: 'Lyon location not found' },
-        { status: 404 }
-      )
-    }
-
-    // Check if user_location already exists
-    const { data: existingUserLocation } = await supabaseAdmin
-      .from('users_locations')
-      .select('id')
-      .eq('user_id', userId)
-      .eq('location_id', lyonLocation.id)
-      .single()
-
-    if (!existingUserLocation) {
-      // Create user_location
-      const { error: userLocationError } = await supabaseAdmin
-        .from('users_locations')
-        .insert({
-          user_id: userId,
-          location_id: lyonLocation.id,
-          role: 'admin'
-        })
-
-      if (userLocationError) {
-        console.error('Error creating user_location:', userLocationError)
-        return NextResponse.json(
-          { error: 'Failed to assign location' },
-          { status: 500 }
-        )
+      if (missing.length) {
+        return NextResponse.json({ ok: false, error: 'schema_mismatch', detail: missing.join(',') }, { status: 422 });
       }
-    }
 
-    // Check if organization role exists
-    const { data: existingOrgRole } = await supabaseAdmin
-      .from('users_organizations')
-      .select('id')
-      .eq('user_id', userId)
-      .eq('organization_id', demoOrg.id)
-      .single()
+      await client.query('BEGIN');
+      const orgRes = await client.query(
+        "insert into orgs(name) values('Demo Org') on conflict (name) do update set name=excluded.name returning id"
+      );
+      const orgId = orgRes.rows[0].id;
+      const locRes = await client.query(
+        "insert into locations(org_id, name) values($1, 'Main') on conflict (org_id, name) do update set name=excluded.name returning id",
+        [orgId]
+      );
+      const locationId = locRes.rows[0].id;
+      await client.query('insert into users(id) values ($1) on conflict (id) do nothing', [userId]);
+      const roleRes = await client.query(
+        "insert into roles(org_id, code, name) values($1, 'admin', 'Admin') on conflict (org_id, code) do update set name=excluded.name returning id",
+        [orgId]
+      );
+      const roleId = roleRes.rows[0].id;
+      await client.query(
+        'insert into users_locations(user_id, org_id, location_id) values ($1,$2,$3) on conflict do nothing',
+        [userId, orgId, locationId]
+      );
+      await client.query(
+        'insert into user_roles(user_id, org_id, role_id) values ($1,$2,$3) on conflict do nothing',
+        [userId, orgId, roleId]
+      );
+      await client.query('COMMIT');
 
-    if (!existingOrgRole) {
-      // Create organization role
-      const { error: orgRoleError } = await supabaseAdmin
-        .from('users_organizations')
-        .insert({
-          user_id: userId,
-          organization_id: demoOrg.id,
-          role: 'admin'
-        })
-
-      if (orgRoleError) {
-        console.error('Error creating org role:', orgRoleError)
-        return NextResponse.json(
-          { error: 'Failed to assign organization role' },
-          { status: 500 }
-        )
+      return NextResponse.json({
+        ok: true,
+        user_id: userId,
+        org_id: orgId,
+        location_id: locationId,
+        role_id: roleId,
+      });
+    } catch (err) {
+      await client.query('ROLLBACK');
+      const detail = err instanceof Error ? err.message : String(err);
+      if (/relation|column/.test(detail)) {
+        return NextResponse.json({ ok: false, error: 'schema_mismatch', detail }, { status: 422 });
       }
+      return NextResponse.json({ ok: false, error: 'bootstrap_failed', detail }, { status: 500 });
+    } finally {
+      await client.end();
     }
-
-    console.log('✅ Bootstrap completed successfully')
-
-    return NextResponse.json({
-      success: true,
-      user_id: userId,
-      org_id: demoOrg.id,
-      location_ids: [lyonLocation.id],
-      role: 'admin',
-      message: 'Admin user bootstrapped successfully'
-    })
-
-  } catch (error) {
-    console.error('❌ Bootstrap failed:', error)
-    return NextResponse.json(
-      { 
-        error: 'Bootstrap failed',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      },
-      { status: 500 }
-    )
+  } catch (err) {
+    const detail = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({ ok: false, error: 'bootstrap_failed', detail }, { status: 500 });
   }
 }
 
-// Only allow POST
 export async function GET() {
-  return NextResponse.json(
-    { error: 'Method not allowed. Use POST.' },
-    { status: 405 }
-  )
+  return NextResponse.json({ ok: false, error: 'method_not_allowed' }, { status: 405 });
 }
+
