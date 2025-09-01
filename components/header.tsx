@@ -26,18 +26,19 @@ const mockLocations = [
 export function Header() {
   const { context, setContext } = useAppStore()
 
-  const handleOrgChange = (orgId: string) => {
+  const handleOrgChange = (orgId?: string) => {
     setContext({
       ...context,
-      org_id: orgId,
+      org_id: orgId ?? null,
       location_id: null // Reset location when org changes
     })
   }
 
-  const handleLocationChange = (locationId: string) => {
+  const handleLocationChange = (locationId?: string) => {
     setContext({
       ...context,
-      location_id: locationId
+      location_id:
+        !locationId || locationId === 'all-locations' ? null : locationId
     })
   }
 
@@ -48,16 +49,24 @@ export function Header() {
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             <Building className="h-4 w-4 text-muted-foreground" />
-            <Select value={context.org_id || ''} onValueChange={handleOrgChange}>
+            <Select
+              value={context.org_id ?? undefined}
+              onValueChange={(v) => handleOrgChange(v || undefined)}
+            >
               <SelectTrigger className="w-48">
                 <SelectValue placeholder="Seleziona organizzazione" />
               </SelectTrigger>
               <SelectContent>
-                {mockOrgs.map((org) => (
-                  <SelectItem key={org.id} value={org.id}>
-                    {org.name}
-                  </SelectItem>
-                ))}
+                {mockOrgs
+                  .filter((org) => org?.id !== undefined && org?.id !== null)
+                  .map((org) => (
+                    <SelectItem
+                      key={`org-${org.id}`}
+                      value={String(org.id)}
+                    >
+                      {org.name}
+                    </SelectItem>
+                  ))}
               </SelectContent>
             </Select>
           </div>
@@ -65,17 +74,30 @@ export function Header() {
           {context.org_id && (
             <div className="flex items-center gap-2">
               <MapPin className="h-4 w-4 text-muted-foreground" />
-              <Select value={context.location_id || ''} onValueChange={handleLocationChange}>
+              <Select
+                value={context.location_id ?? undefined}
+                onValueChange={(v) => handleLocationChange(v || undefined)}
+              >
                 <SelectTrigger className="w-40">
                   <SelectValue placeholder="Tutte le location" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Tutte le location</SelectItem>
-                  {mockLocations.map((location) => (
-                    <SelectItem key={location.id} value={location.id}>
-                      {location.name}
-                    </SelectItem>
-                  ))}
+                  <SelectItem value="all-locations">
+                    Tutte le location
+                  </SelectItem>
+                  {mockLocations
+                    .filter(
+                      (location) =>
+                        location?.id !== undefined && location?.id !== null
+                    )
+                    .map((location) => (
+                      <SelectItem
+                        key={`loc-${location.id}`}
+                        value={String(location.id)}
+                      >
+                        {location.name}
+                      </SelectItem>
+                    ))}
                 </SelectContent>
               </Select>
             </div>
