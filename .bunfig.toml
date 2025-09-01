@@ -1,0 +1,7 @@
+[install]
+registry = "https://registry.npmjs.org/"
+retry = 5
+offline = false
+
+[install.lockfile]
+save = true

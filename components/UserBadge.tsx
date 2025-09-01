@@ -1,12 +1,12 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { createClient } from '@/utils/supabase/client';
+import { createSupabaseBrowserClient } from '@/utils/supabase/client';
 import { hardLogout } from '@/lib/hardLogout';
 
 export function UserBadge() {
   const [email, setEmail] = useState<string|null>(null);
   useEffect(() => {
-    const supabase = createClient();
+    const supabase = createSupabaseBrowserClient();
     supabase.auth.getUser().then(({ data }) => setEmail(data.user?.email ?? null));
   }, []);
   if (!email) return <a href="/login" className="text-sm underline">Accedi</a>;
