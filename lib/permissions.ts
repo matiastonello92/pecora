@@ -1,10 +1,14 @@
-import type { Permission } from './permissions-registry';
-export type { Permission } from './permissions-registry';
+import type { Permission } from './permissions/registry';
+export type { Permission } from './permissions/registry';
 
 export function can(perms: Permission[] | undefined, needed: Permission | Permission[]): boolean {
   if (!perms?.length) return false;
   const need = Array.isArray(needed) ? needed : [needed];
-  return need.every(n => perms.includes(n) || perms.includes("*") || perms.includes(n.split(":")[0] + ":*"));
+  return need.every(n =>
+    perms.includes(n) ||
+    perms.includes('*') ||
+    perms.includes((n.split(':')[0] + ':*') as Permission)
+  );
 }
 
 /**
