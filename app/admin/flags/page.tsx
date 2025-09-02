@@ -19,7 +19,7 @@ import { useRequireSession } from '@/lib/useRequireSession'
 const mockFlags = [
   {
     id: '1',
-    module_code: 'ordini',
+    module_code: 'orders',
     flag_code: 'auto_approval',
     name: 'Auto Approval Ordini',
     description: 'Approva automaticamente gli ordini sotto una certa soglia',
@@ -41,7 +41,7 @@ const mockFlags = [
   },
   {
     id: '3',
-    module_code: 'inventario',
+    module_code: 'inventory',
     flag_code: 'advanced_tracking',
     name: 'Tracking Avanzato',
     description: 'Sistema di tracciamento avanzato per inventario',
@@ -52,7 +52,7 @@ const mockFlags = [
   },
   {
     id: '4',
-    module_code: 'inventario',
+    module_code: 'inventory',
     flag_code: 'advanced_tracking',
     name: 'Tracking Avanzato',
     description: 'Sistema di tracciamento avanzato per inventario',
@@ -64,7 +64,7 @@ const mockFlags = [
 ]
 
 const mockModules = [
-  'locations', 'inventario', 'tecnici', 'incidents', 'fornitori', 'ordini', 'task', 'chat', 'api'
+  'locations', 'inventory', 'technicians', 'incidents', 'suppliers', 'orders', 'tasks', 'chat', 'api'
 ]
 
 export default function FeatureFlagsPage() {

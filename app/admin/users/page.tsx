@@ -19,21 +19,21 @@ const mockUsers = [
     email: 'admin@demo.com',
     roles: ['admin'],
     locations: ['Lyon', 'Menton'],
-    permissions: ['locations.manage_users', 'locations.manage_permissions', 'ordini.send_order']
+    permissions: ['locations.manage_users', 'locations.manage_permissions', 'orders.send_order']
   },
   {
     id: '2', 
     email: 'manager@demo.com',
     roles: ['manager'],
     locations: ['Lyon'],
-    permissions: ['ordini.approve', 'inventario.edit']
+    permissions: ['orders.approve', 'inventory.edit']
   },
   {
     id: '3',
     email: 'staff@demo.com', 
     roles: ['staff'],
     locations: ['Lyon'],
-    permissions: ['task.create', 'chat.create']
+    permissions: ['tasks.create', 'chat.create']
   }
 ]
 
@@ -46,9 +46,9 @@ const mockRoles = [
 const mockPermissions = [
   'locations.view', 'locations.create', 'locations.edit', 'locations.delete',
   'locations.manage_users', 'locations.manage_permissions',
-  'inventario.view', 'inventario.create', 'inventario.edit',
-  'ordini.view', 'ordini.create', 'ordini.edit', 'ordini.send_order', 'ordini.approve',
-  'task.view', 'task.create', 'task.edit',
+  'inventory.view', 'inventory.create', 'inventory.edit',
+  'orders.view', 'orders.create', 'orders.edit', 'orders.send_order', 'orders.approve',
+  'tasks.view', 'tasks.create', 'tasks.edit',
   'chat.view', 'chat.create'
 ]
 
