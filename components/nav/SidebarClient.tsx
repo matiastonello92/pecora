@@ -63,13 +63,13 @@ const navigation = [
         name: 'Inventario',
         href: '/inventario',
         icon: Package,
-        permission: 'inventario.view'
+        permission: 'inventory.view'
       },
       {
         name: 'Tecnici',
         href: '/tecnici',
         icon: Wrench,
-        permission: 'tecnici.view'
+        permission: 'technicians.view'
       },
       {
         name: 'Incidents',
@@ -81,19 +81,19 @@ const navigation = [
         name: 'Fornitori',
         href: '/fornitori',
         icon: Truck,
-        permission: 'fornitori.view'
+        permission: 'suppliers.view'
       },
       {
         name: 'Ordini',
         href: '/ordini',
         icon: ShoppingCart,
-        permission: 'ordini.view'
+        permission: 'orders.view'
       },
       {
         name: 'Task',
         href: '/task',
         icon: CheckSquare,
-        permission: 'task.view'
+        permission: 'tasks.view'
       },
       {
         name: 'Chat',

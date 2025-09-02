@@ -8,8 +8,8 @@
 INSERT INTO permission_presets (id, code, name) VALUES
     ('60000000-0000-0000-0000-000000000001', 'admin_full', 'Admin Full'),
     ('60000000-0000-0000-0000-000000000002', 'manager_standard', 'Manager Standard'),
-    ('60000000-0000-0000-0000-000000000003', 'staff_cucina', 'Staff Cucina'),
-    ('60000000-0000-0000-0000-000000000004', 'staff_sala', 'Staff Sala')
+    ('60000000-0000-0000-0000-000000000003', 'staff_kitchen', 'Staff Kitchen'),
+    ('60000000-0000-0000-0000-000000000004', 'staff_dining', 'Staff Dining')
 ON CONFLICT (code) DO NOTHING;
 
 -- =====================================================
@@ -41,14 +41,14 @@ INSERT INTO permission_preset_items (preset_id, permission_id, allow) VALUES
     ('60000000-0000-0000-0000-000000000002', '30000000-0000-0000-0000-000000000008', true)
 ON CONFLICT (preset_id, permission_id) DO NOTHING;
 
--- Staff Cucina subset
+-- Staff Kitchen subset
 INSERT INTO permission_preset_items (preset_id, permission_id, allow) VALUES
     ('60000000-0000-0000-0000-000000000003', '30000000-0000-0000-0000-000000000001', true),
     ('60000000-0000-0000-0000-000000000003', '30000000-0000-0000-0000-000000000003', true),
     ('60000000-0000-0000-0000-000000000003', '30000000-0000-0000-0000-000000000008', true)
 ON CONFLICT (preset_id, permission_id) DO NOTHING;
 
--- Staff Sala subset
+-- Staff Dining subset
 INSERT INTO permission_preset_items (preset_id, permission_id, allow) VALUES
     ('60000000-0000-0000-0000-000000000004', '30000000-0000-0000-0000-000000000001', true),
     ('60000000-0000-0000-0000-000000000004', '30000000-0000-0000-0000-000000000003', true)

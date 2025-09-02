@@ -38,8 +38,9 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
 - `users` - Utenti (extends auth.users)
 - `users_locations` - Relazioni utente-location (unique constraint)
 
+
 **Sistema Permessi:**
-- `modules` - 9 moduli (locations, inventario, tecnici, incidents, fornitori, ordini, task, chat, api)
+- `modules` - 9 moduli (locations, inventory, technicians, incidents, suppliers, orders, tasks, chat, api)
 - `actions` - 9 azioni (view, create, edit, delete, send_order, approve, manage_users, manage_permissions, manage_flags)
 - `permissions` - ~25 permessi (formato modulo.azione)
 - `roles` - Ruoli per organizzazione (admin, manager, staff)
@@ -48,7 +49,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
 - `user_permission_overrides` - Override individuali
 
 **Governance:**
-- `permission_presets` - 4 preset (admin_full, manager_standard, staff_cucina, staff_sala)
+- `permission_presets` - 4 preset (admin_full, manager_standard, staff_kitchen, staff_dining)
 - `preset_permissions` - Relazioni preset-permessi
 - `feature_flags` - Flags per modulo/location
 - `audit_log` - Log modifiche con diff JSON
@@ -116,18 +117,18 @@ $$;
 **Ruoli:**
 - admin (tutte le permissions)
 - manager (view/create/edit/approve, no delete)
-- staff (view limitato, create task/chat)
+- staff (view limitato, create tasks/chat)
 
 **Permission Presets:**
 - admin_full (25 permessi)
 - manager_standard (15 permessi)
-- staff_cucina (6 permessi)
-- staff_sala (5 permessi)
+- staff_kitchen (6 permessi)
+- staff_dining (5 permessi)
 
 **Feature Flags:**
-- ordini.auto_approval (globale, disattivo)
+- orders.auto_approval (globale, disattivo)
 - chat.real_time (globale, attivo)
-- inventario.advanced_tracking (Lyon: attivo, Menton: disattivo)
+- inventory.advanced_tracking (Lyon: attivo, Menton: disattivo)
 
 ---
 

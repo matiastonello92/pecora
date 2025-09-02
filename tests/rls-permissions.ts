@@ -95,7 +95,7 @@ async function testPermissionSystem(): Promise<TestResult> {
     }
     
     // Test that admin can send orders
-    const canSendOrder = await can(adminUserId, 'ordini.send_order', context)
+    const canSendOrder = await can(adminUserId, 'orders.send_order', context)
     
     // Test that admin can manage users
     const canManageUsers = await can(adminUserId, 'locations.manage_users', context)
@@ -104,10 +104,10 @@ async function testPermissionSystem(): Promise<TestResult> {
     const staffUserId = '550e8400-e29b-41d4-a716-446655440102' // Mock staff user
     
     // Staff should NOT be able to send orders
-    const staffCanSendOrder = await can(staffUserId, 'ordini.send_order', context)
+    const staffCanSendOrder = await can(staffUserId, 'orders.send_order', context)
     
     // Staff should be able to create tasks
-    const staffCanCreateTask = await can(staffUserId, 'task.create', context)
+    const staffCanCreateTask = await can(staffUserId, 'tasks.create', context)
     
     // Validate results
     const issues = []

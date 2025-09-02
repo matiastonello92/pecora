@@ -1,4 +1,5 @@
-export type Permission = string;
+import type { Permission } from './permissions-registry';
+export type { Permission } from './permissions-registry';
 
 export function can(perms: Permission[] | undefined, needed: Permission | Permission[]): boolean {
   if (!perms?.length) return false;
